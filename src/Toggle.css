@@ -1,4 +1,4 @@
-.toggle-switch {
+.toggle {
     position: relative;
     width: 75px;
     display: inline-block;
@@ -9,11 +9,11 @@
     text-align: left;
 }
 
-.toggle-switch-checkbox {
+.toggle-checkbox {
     display: none;
 }
 
-.toggle-switch-label {
+.toggle-label {
     display: block;
     overflow: hidden;
     cursor: pointer;
@@ -22,14 +22,14 @@
     margin: 0;
 }
 
-.toggle-switch-inner {
+.toggle-inner {
     display: block;
     width: 200%;
     margin-left: -100%;
     transition: margin 0.3s ease-in 0s;
 }
 
-.toggle-switch-inner:before, .toggle-switch-inner:after {
+.toggle-inner:before, .toggle-inner:after {
     display: block;
     float: left;
     width: 50%;
@@ -42,7 +42,7 @@
     box-sizing: border-box;
 }
 
-.toggle-switch-inner:before {
+.toggle-inner:before {
     content: "Yes";
     text-transform: uppercase;
     padding-left: 10px;
@@ -50,17 +50,7 @@
     color: #fff;
     }
 
-.toggle-switch-disabled {
-    background-color: #ddd;
-    cursor: not-allowed;
-}
-
-.toggle-switch-disabled:before {
-    background-color: #ddd;
-    cursor: not-allowed;
-}
-
-.toggle-switch-inner:after {
+.toggle-inner:after {
     content: "No";
     text-transform: uppercase;
     padding-right: 10px;
@@ -69,7 +59,7 @@
     text-align: right;
 }
 
-.toggle-switch-switch {
+.toggle-switch {
     display: block;
     width: 24px;
     margin: 5px;
@@ -83,10 +73,10 @@
     transition: all 0.3s ease-in 0s;
 }
 
-.toggle-switch-checkbox:checked + .toggle-switch-label .toggle-switch-inner {
+.toggle-checkbox:checked + .toggle-label .toggle-inner {
     margin-left: 0;
 }
 
-.toggle-switch-checkbox:checked + .toggle-switch-label .toggle-switch-switch {
+.toggle-checkbox:checked + .toggle-label .toggle-switch {
     right: 0px;
 }
