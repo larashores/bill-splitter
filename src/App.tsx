@@ -1,6 +1,6 @@
 import React from 'react'
-import Toggle from "./Toggle.tsx"
-import List from "./List.tsx"
+// import Toggle from "./Toggle.tsx"
+// import List from "./List.tsx"
 import './App.css'
 
 

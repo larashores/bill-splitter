@@ -1,23 +1,23 @@
-import React from 'react'
-import "./Toggle.css"
+// import React from 'react'
+// import "./Toggle.css"
 
 
-function Toggle(props: {id?: string}) {
+// function Toggle(props: {id?: string}) {
     
-    const id = props.id || "toggle-" + Toggle.nextID++
+//     const id = props.id || "toggle-" + Toggle.nextID++
 
-    const [checked, setChecked] = React.useState(true)
+//     const [checked, setChecked] = React.useState(true)
 
-    return <>
-        <div className="toggle">
-            <input type="checkbox" className="toggle-checkbox" name="toggleSwitch" id={id} checked={checked} onChange={e => setChecked(e.target.checked)}/>
-            <label className="toggle-label" htmlFor={id}>
-                <span className="toggle-inner"/>
-                <span className="toggle-switch"/>
-            </label>
-        </div>
-    </>
-}
-Toggle.nextID = 0
+//     return <>
+//         <div className="toggle">
+//             <input type="checkbox" className="toggle-checkbox" name="toggleSwitch" id={id} checked={checked} onChange={e => setChecked(e.target.checked)}/>
+//             <label className="toggle-label" htmlFor={id}>
+//                 <span className="toggle-inner"/>
+//                 <span className="toggle-switch"/>
+//             </label>
+//         </div>
+//     </>
+// }
+// Toggle.nextID = 0
 
-export default Toggle
+// export default Toggle

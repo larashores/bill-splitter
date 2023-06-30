@@ -1,4 +1,4 @@
-.toggle {
+/* .toggle {
     position: relative;
     width: 75px;
     display: inline-block;
@@ -79,4 +79,4 @@
 
 .toggle-checkbox:checked + .toggle-label .toggle-switch {
     right: 0px;
-}
+} */
