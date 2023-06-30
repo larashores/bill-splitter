@@ -151,7 +151,7 @@ function App() {
             }
         </table>
         <h2>Results</h2>
-        <ul>
+        <ul id="results">
             {
                 people.filter((person) => person).map(
                     (person, ind) => <>
@@ -185,7 +185,6 @@ function App() {
                 )
             }
         </ul>
-        
     </>
     )
 }
