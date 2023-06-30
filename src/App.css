@@ -11,6 +11,7 @@ body {
   background-color: #e9bb9b;
   background-size: 100% auto;
   text-align: center;
+  text-shadow: .05em .05em .1em white;
 }
 
 @media (min-width: 768px) {
