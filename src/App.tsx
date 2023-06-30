@@ -84,54 +84,72 @@ function App() {
     <>
         <h1>Bill Splitter</h1>
         <h2>People</h2>
-        <div id="people">
-           <label>Name</label>
+        <table>
+           <tr>
+               <th><label>Name</label></th>
+            </tr>
             {
                 people.map(
                     (person, ind) => <>
-                        <input onChange={(e) => onPersonChange(e, ind)} value={person}></input>
+                        <tr>
+                            <td><input onChange={(e) => onPersonChange(e, ind)} value={person}></input></td>
+                        </tr>
                     </>
                 )
             }
-        </div>
+        </table>
         <h2>Items</h2>
-        <div id="items">
-            <label>Name</label><label>Amount</label><label>Person</label>
+        <table>
+            <tr>
+                <th><label>Name</label></th>
+                <th><label>Amount</label></th>
+                <th><label>Person</label></th>
+            </tr>
             {
                 items.map(
                     (item, ind) => <>
-                        <input onChange={(e) => onItemChange(e, ind, "name")} value={item.name}/>
-                        <input onChange={(e) => onItemChange(e, ind, "amount")} value={item.amount} type="number"/>
-                        <select onChange={(e) => onItemChange(e, ind, "person")} value={item.person}>
-                            <option value=""></option>
-                            {
-                                people.filter((person) => person).map(
-                                    (person) => <option value={person}>{person}</option>
-                                )
-                            }
-                        </select>
+                        <tr>
+                            <td><input onChange={(e) => onItemChange(e, ind, "name")} value={item.name}/></td>
+                            <td><input onChange={(e) => onItemChange(e, ind, "amount")} value={item.amount} type="number"/></td>
+                            <td>
+                                <select onChange={(e) => onItemChange(e, ind, "person")} value={item.person}>
+                                    <option value=""></option>
+                                    {
+                                        people.filter((person) => person).map(
+                                            (person) => <option value={person}>{person}</option>
+                                        )
+                                    }
+                                </select>
+                            </td>
+                        </tr>
                     </>
                 )
             }
-        </div>
+        </table>
         <h2>Fees</h2>
-        <div id="layout">
-            <label>Name</label>
-            <label>Amount</label>
-            <label>Type</label>
+        <table>
+            <tr>
+                <th><label>Name</label></th>
+                <th><label>Amount</label></th>
+                <th><label>Type</label></th>
+            </tr>
             {
                 fees.map(
                     (row, ind) => <>
-                        <input onChange={(e) => onFeeChange(e, ind, "name")} value={row.name}/>
-                        <input onChange={(e) => onFeeChange(e, ind, "amount")} value={row.amount} type="number"/>
-                        <select value={row.type} onChange={(e) => onFeeChange(e, ind, "type")}>
-                            <option value="Flat">Flat</option>
-                            <option value="Percent">Percent</option>
-                        </select>
+                        <tr>
+                            <td><input onChange={(e) => onFeeChange(e, ind, "name")} value={row.name}/></td>
+                            <td><input onChange={(e) => onFeeChange(e, ind, "amount")} value={row.amount} type="number"/></td>
+                            <td>
+                                <select value={row.type} onChange={(e) => onFeeChange(e, ind, "type")}>
+                                    <option value="Flat">Flat</option>
+                                    <option value="Percent">Percent</option>
+                                </select>
+                            </td>
+                        </tr>
                     </>
                 )
             }
-        </div>
+        </table>
         <h2>Results</h2>
         <ul>
             {
