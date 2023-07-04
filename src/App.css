@@ -24,7 +24,7 @@ table, input, select, label, #results {
 }
 
 select {
-  width: 25vmin
+  min-width: 25vmin
 }
 
 #results {
