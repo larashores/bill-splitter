@@ -1,9 +1,8 @@
 // import React from 'react'
 // import "./Toggle.css"
 
-
 // function Toggle(props: {id?: string}) {
-    
+
 //     const id = props.id || "toggle-" + Toggle.nextID++
 
 //     const [checked, setChecked] = React.useState(true)

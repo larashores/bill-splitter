@@ -35,11 +35,11 @@
 //                     (item, ind) => <li key={ind}>
 //                         {
 //                             props.columns.map(
-//                                 (col) => col.type == "select" ? 
+//                                 (col) => col.type == "select" ?
 //                                 <select onChange={(e) =>  onChange(e, ind, col.name)} value={item[col.name]}>
 //                                     <option value="Lara">Lara</option>
 //                                     <option value="Kat">Kat</option>
-//                                 </select>: 
+//                                 </select>:
 //                                 <input onChange={(e) => onChange(e, ind, col.name)} value={item[col.name]} type={col.type}/>
 //                             )
 //                         }

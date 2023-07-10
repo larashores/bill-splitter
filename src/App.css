@@ -5,7 +5,7 @@ body {
   background-color: #e9bb9b;
   background-size: 100% auto;
   text-align: center;
-  text-shadow: .05em .05em .1em white;
+  text-shadow: 0.05em 0.05em 0.1em white;
 }
 
 @media (min-width: 768px) {
@@ -14,17 +14,21 @@ body {
   }
 }
 
-table, input, select, label, #results {
+table,
+input,
+select,
+label,
+#results {
   text-align: center;
   border-radius: 3vmin;
   border-width: 1px;
   box-sizing: border-box;
   width: 100%;
-  font-size: 1em
+  font-size: 1em;
 }
 
 select {
-  min-width: 25vmin
+  min-width: 25vmin;
 }
 
 #results {
@@ -37,5 +41,5 @@ select {
 }
 
 li {
-  font-size: 1em
+  font-size: 1em;
 }
