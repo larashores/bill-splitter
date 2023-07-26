@@ -3,17 +3,17 @@ import "./App.css";
 
 type Event = { target: { value: string } };
 type Props = {
-    onChange: (event: Event) => void,
-    value: string,
-}
+  onChange: (event: Event) => void;
+  value: string;
+};
 
 type ColumnSpecifier = {
-    name: string,
-    Type: React.FC<Props>,
+  name: string;
+  Type: React.FC<Props>;
 };
 
 function List(props: { columns: Array<ColumnSpecifier> }) {
-  const empty = props.columns.reduce(
+  const empty: { [key: string]: string } = props.columns.reduce(
     (acc, item) => ({ ...acc, [item.name]: "" }),
     {}
   );
@@ -46,7 +46,10 @@ function List(props: { columns: Array<ColumnSpecifier> }) {
           <tr key={ind}>
             {props.columns.map((col) => (
               <td>
-                <col.Type onChange={(e) => onChange(e, ind, col.name)} value={item[col.name]}></col.Type>
+                <col.Type
+                  onChange={(e) => onChange(e, ind, col.name)}
+                  value={item[col.name]}
+                ></col.Type>
               </td>
             ))}
           </tr>
