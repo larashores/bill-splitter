@@ -2,13 +2,14 @@ import React from "react";
 import "./App.css";
 
 type Event = { target: { value: string } };
+type Props = {
+    onChange: (event: Event) => void,
+    value: string,
+}
 
 type ColumnSpecifier = {
     name: string,
-    Type: (
-        onChange: (event: Event) => void,
-        value: string,
-    ) => any
+    Type: React.FC<Props>,
 };
 
 function List(props: { columns: Array<ColumnSpecifier> }) {
@@ -18,7 +19,7 @@ function List(props: { columns: Array<ColumnSpecifier> }) {
   );
   const [items, setItems] = React.useState([empty]);
 
-  function onChange2(event: Event, ind: number, field: string) {
+  function onChange(event: Event, ind: number, field: string) {
     const newItems = items
       .map((item, i) =>
         i === ind ? { ...item, [field]: event.target.value } : item
@@ -45,7 +46,7 @@ function List(props: { columns: Array<ColumnSpecifier> }) {
           <tr key={ind}>
             {props.columns.map((col) => (
               <td>
-                <col.Type onChange={(e) => onChange2(e, ind, col.name)} value={item[col.name]}></col.Type>
+                <col.Type onChange={(e) => onChange(e, ind, col.name)} value={item[col.name]}></col.Type>
               </td>
             ))}
           </tr>
