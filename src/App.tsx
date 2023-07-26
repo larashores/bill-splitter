@@ -1,67 +1,63 @@
 import React from "react";
 // import Toggle from "./Toggle.tsx"
-// import List from "./List.tsx"
+import List from "./List.tsx";
 import "./App.css";
 
+function NumberCell(props: React.ComponentProps<"input">) {
+  return <input type="number" {...props}></input>;
+}
+
+function TextCell(props: React.ComponentProps<"input">) {
+  return <input {...props}></input>;
+}
+
+function FeeCell(props: React.ComponentProps<"select">) {
+  return (
+    <select {...props}>
+      <option value="Flat">Flat</option>
+      <option value="Percent">Percent</option>
+    </select>
+  );
+}
+
 function App() {
+  const initialFees = [
+    ["Tax", "", "flat"],
+    ["Tip", "", "flat"],
+    ["", "", "flat"],
+  ];
   const [people, setPeople] = React.useState([""]);
   const [items, setItems] = React.useState([
     { amount: "", name: "", person: "" },
   ]);
-  const [fees, setFees] = React.useState([
-    { amount: "", name: "Tax", type: "flat" },
-    { amount: "", name: "Tip", type: "flat" },
-    { amount: "", name: "", type: "flat" },
-  ]);
+  const [fees, setFees] = React.useState([{ amount: "", name: "", type: "" }]);
 
   function prefix(pre: string, value: string): string {
     return value ? pre + value : value;
   }
 
-  function onPersonChange(event: { target: { value: string } }, ind: number) {
-    const newPeople = people
-      .map((person, i) => (i === ind ? event.target.value : person))
-      .filter((item, i) => item || ind == i);
-
-    if (newPeople.every((person) => person)) {
-      newPeople.push("");
-    }
-    console.log(newPeople);
-    setPeople(newPeople);
+  function onPersonChange(event: { target: { value: string[][] } }) {
+    setPeople(event.target.value.map((row) => row[0]));
   }
 
-  function onItemChange(
-    event: { target: { value: string } },
-    ind: number,
-    field: string
-  ) {
-    const newItems = items
-      .map((item, i) =>
-        i === ind ? { ...item, [field]: event.target.value } : item
-      )
-      .filter((item, i) => item.amount || item.name || ind == i);
-
-    if (newItems.every((item) => item.amount || item.name)) {
-      newItems.push({ amount: "", name: "", person: "" });
-    }
-    setItems(newItems);
+  function onItemChange(event: { target: { value: string[][] } }) {
+    setItems(
+      event.target.value.map((row) => ({
+        name: row[0],
+        amount: row[1],
+        person: row[2],
+      }))
+    );
   }
 
-  function onFeeChange(
-    event: { target: { value: string } },
-    ind: number,
-    field: string
-  ) {
-    const newFees = fees
-      .map((item, i) =>
-        i === ind ? { ...item, [field]: event.target.value } : item
-      )
-      .filter((item, i) => item.amount || item.name || ind == i);
-
-    if (newFees.every((row) => row.amount || row.name)) {
-      newFees.push({ amount: "", name: "", type: "flat" });
-    }
-    setFees(newFees);
+  function onFeeChange(event: { target: { value: string[][] } }) {
+    setFees(
+      event.target.value.map((row) => ({
+        name: row[0],
+        amount: row[1],
+        type: row[2],
+      }))
+    );
   }
 
   function breakdownFees(value: number) {
@@ -92,117 +88,46 @@ function App() {
     return Number.isNaN(total) ? 0 : total;
   }
 
+  function PersonCell(props: React.ComponentProps<"select">) {
+    return (
+      <select {...props}>
+        <option value=""></option>
+        {people
+          .filter((person) => person)
+          .map((person) => (
+            <option value={person}>{person}</option>
+          ))}
+      </select>
+    );
+  }
+
   return (
     <>
       <h1>Bill Splitter</h1>
       <h2>People</h2>
-      <table>
-        <tr>
-          <th>
-            <label>Name</label>
-          </th>
-        </tr>
-        {people.map((person, ind) => (
-          <>
-            <tr>
-              <td>
-                <input
-                  onChange={(e) => onPersonChange(e, ind)}
-                  value={person}
-                ></input>
-              </td>
-            </tr>
-          </>
-        ))}
-      </table>
+      <List
+        columns={[{ name: "Name", Type: TextCell }]}
+        onChange={onPersonChange}
+      />
       <h2>Items</h2>
-      <table>
-        <tr>
-          <th>
-            <label>Name</label>
-          </th>
-          <th>
-            <label>Amount</label>
-          </th>
-          <th>
-            <label>Person</label>
-          </th>
-        </tr>
-        {items.map((item, ind) => (
-          <>
-            <tr>
-              <td>
-                <input
-                  onChange={(e) => onItemChange(e, ind, "name")}
-                  value={item.name}
-                />
-              </td>
-              <td>
-                <input
-                  onChange={(e) => onItemChange(e, ind, "amount")}
-                  value={item.amount}
-                  type="number"
-                />
-              </td>
-              <td>
-                <select
-                  onChange={(e) => onItemChange(e, ind, "person")}
-                  value={item.person}
-                >
-                  <option value=""></option>
-                  {people
-                    .filter((person) => person)
-                    .map((person) => (
-                      <option value={person}>{person}</option>
-                    ))}
-                </select>
-              </td>
-            </tr>
-          </>
-        ))}
-      </table>
+      <List
+        columns={[
+          { name: "Name", Type: TextCell },
+          { name: "Amount", Type: NumberCell },
+          { name: "Person", Type: PersonCell },
+        ]}
+        onChange={onItemChange}
+      />
       <h2>Fees</h2>
-      <table>
-        <tr>
-          <th>
-            <label>Name</label>
-          </th>
-          <th>
-            <label>Amount</label>
-          </th>
-          <th>
-            <label>Type</label>
-          </th>
-        </tr>
-        {fees.map((row, ind) => (
-          <>
-            <tr>
-              <td>
-                <input
-                  onChange={(e) => onFeeChange(e, ind, "name")}
-                  value={row.name}
-                />
-              </td>
-              <td>
-                <input
-                  onChange={(e) => onFeeChange(e, ind, "amount")}
-                  value={row.amount}
-                  type="number"
-                />
-              </td>
-              <td>
-                <select
-                  value={row.type}
-                  onChange={(e) => onFeeChange(e, ind, "type")}
-                >
-                  <option value="Flat">Flat</option>
-                  <option value="Percent">Percent</option>
-                </select>
-              </td>
-            </tr>
-          </>
-        ))}
-      </table>
+      <List
+        columns={[
+          { name: "Name", Type: TextCell },
+          { name: "Amount", Type: NumberCell },
+          { name: "Type", Type: FeeCell },
+        ]}
+        onChange={onFeeChange}
+        initialValues={initialFees}
+      />
       <h2>Results</h2>
       <ul id="results">
         {people

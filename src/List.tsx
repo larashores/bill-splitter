@@ -1,9 +1,9 @@
 import React from "react";
 import "./App.css";
 
-type Event = { target: { value: string } };
+type Event<T> = { target: { value: T } };
 type Props = {
-  onChange: (event: Event) => void;
+  onChange: (event: Event<string>) => void;
   value: string;
 };
 
@@ -12,24 +12,34 @@ type ColumnSpecifier = {
   Type: React.FC<Props>;
 };
 
-function List(props: { columns: Array<ColumnSpecifier> }) {
-  const empty: { [key: string]: string } = props.columns.reduce(
-    (acc, item) => ({ ...acc, [item.name]: "" }),
-    {}
-  );
-  const [items, setItems] = React.useState([empty]);
+function List(props: {
+  columns: Array<ColumnSpecifier>;
+  onChange?: (event: Event<string[][]>) => void;
+  initialValues?: string[][];
+}) {
+  const empty = Array<string>(props.columns.length).fill("");
+  const initialValues =
+    props.initialValues === undefined ? [empty] : props.initialValues;
+  const [items, setItems] = React.useState(initialValues);
 
-  function onChange(event: Event, ind: number, field: string) {
+  function onChange(event: Event<string>, row: number, col: number) {
     const newItems = items
-      .map((item, i) =>
-        i === ind ? { ...item, [field]: event.target.value } : item
+      .map((item, r) =>
+        r === row
+          ? item.map((v, c) => (c == col ? event.target.value : v))
+          : item
       )
-      .filter((item, i) => Object.values(item).some((x) => x) || ind == i);
-    if (newItems.every((item) => Object.values(item).some((x) => x))) {
+      .filter((item, i) => item.some((x) => x) || row == i);
+    if (newItems.every((item) => item.some((x) => x))) {
       newItems.push(empty);
     }
     setItems(newItems);
-    console.log(newItems);
+    if (props.onChange !== undefined) {
+      props.onChange({
+        ...event,
+        target: { ...event.target, value: newItems },
+      });
+    }
   }
 
   return (
@@ -44,11 +54,11 @@ function List(props: { columns: Array<ColumnSpecifier> }) {
         </tr>
         {items.map((item, ind) => (
           <tr key={ind}>
-            {props.columns.map((col) => (
+            {props.columns.map((col, n) => (
               <td>
                 <col.Type
-                  onChange={(e) => onChange(e, ind, col.name)}
-                  value={item[col.name]}
+                  onChange={(e) => onChange(e, ind, n)}
+                  value={item[n]}
                 ></col.Type>
               </td>
             ))}
