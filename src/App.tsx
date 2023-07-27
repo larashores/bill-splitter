@@ -15,8 +15,8 @@ function TextCell(props: React.ComponentProps<"input">) {
 function FeeCell(props: React.ComponentProps<"select">) {
   return (
     <select {...props}>
-      <option value="Flat">Flat</option>
-      <option value="Percent">Percent</option>
+      <option value="flat">Flat</option>
+      <option value="percent">Percent</option>
     </select>
   );
 }
