@@ -10,6 +10,7 @@ type Props = {
 type ColumnSpecifier = {
   name: string;
   Type: React.FC<Props>;
+  isBlank?: (value: string) => boolean;
 };
 
 function List(props: {
@@ -22,15 +23,21 @@ function List(props: {
     props.initialValues === undefined ? [empty] : props.initialValues;
   const [items, setItems] = React.useState(initialValues);
 
+  function isBlank(value: string, col: number) {
+    const f = props.columns[col].isBlank;
+    return f ? f(value) : value === "";
+  }
+
   function onChange(event: Event<string>, row: number, col: number) {
     const newItems = items
-      .map((item, r) =>
-        r === row
-          ? item.map((v, c) => (c == col ? event.target.value : v))
+      .map((item, m) =>
+        m === row
+          ? item.map((v, n) => (n == col ? event.target.value : v))
           : item
       )
-      .filter((item, i) => item.some((x) => x) || row == i);
-    if (newItems.every((item) => item.some((x) => x))) {
+      .filter((item, m) => item.some((x, n) => !isBlank(x, n)) || row == m);
+
+    if (newItems.every((item) => item.some((x, n) => !isBlank(x, n)))) {
       newItems.push(empty);
     }
     setItems(newItems);
@@ -52,12 +59,12 @@ function List(props: {
             </th>
           ))}
         </tr>
-        {items.map((item, ind) => (
-          <tr key={ind}>
+        {items.map((item, m) => (
+          <tr key={m}>
             {props.columns.map((col, n) => (
               <td>
                 <col.Type
-                  onChange={(e) => onChange(e, ind, n)}
+                  onChange={(e) => onChange(e, m, n)}
                   value={item[n]}
                 ></col.Type>
               </td>
