@@ -1,6 +1,7 @@
 import React from "react";
 // import Toggle from "./Toggle.tsx"
 import List from "./List.tsx";
+import * as utils from "./utils.tsx"
 import "./App.css";
 
 function NumberCell(props: React.ComponentProps<"input">) {
@@ -31,10 +32,6 @@ function App() {
     { amount: "", name: "", person: "" },
   ]);
   const [fees, setFees] = React.useState([{ amount: "", name: "", type: "" }]);
-
-  function prefix(pre: string, value: string): string {
-    return value ? pre + value : value;
-  }
 
   function onPersonChange(event: { target: { value: string[][] } }) {
     setPeople(event.target.value.map((row) => row[0]));
@@ -101,6 +98,42 @@ function App() {
     );
   }
 
+  function Results() {
+    return (
+      <ul id="results">
+        {people
+          .filter((person) => person)
+          .map((person, ind) => (
+            <li key={ind}>
+              {person}: {"$" + getTotal(person)?.toFixed(2)}
+              <ul>
+                {items
+                  .filter((row) => row.person == person && row.amount)
+                  .map((row, ind) => (
+                    <li key={ind}>
+                      {row.name} : $
+                      {breakdownFees(Number(row.amount))
+                        .map((row) => row.amount)
+                        .reduce(
+                          (amount, current) => amount + current,
+                          Number(row.amount)
+                        )
+                        .toFixed(2)}
+                      {utils.prefix(
+                        ` = $${row.amount} + `,
+                        breakdownFees(Number(row.amount))
+                          .map((row) => `$${row.amount.toFixed(2)} ${row.name}`)
+                          .join(" + ")
+                      )}
+                    </li>
+                  ))}
+              </ul>
+            </li>
+          ))}
+      </ul>
+    );
+  }
+
   return (
     <>
       <h1>Bill Splitter</h1>
@@ -129,41 +162,7 @@ function App() {
         initialValues={initialFees}
       />
       <h2>Results</h2>
-      <ul id="results">
-        {people
-          .filter((person) => person)
-          .map((person, ind) => (
-            <>
-              <li key={ind}>
-                {person}: {"$" + getTotal(person)?.toFixed(2)}
-                <ul>
-                  {items
-                    .filter((row) => row.person == person && row.amount)
-                    .map((row, ind) => (
-                      <li key={ind}>
-                        {row.name} : $
-                        {breakdownFees(Number(row.amount))
-                          .map((row) => row.amount)
-                          .reduce(
-                            (amount, current) => amount + current,
-                            Number(row.amount)
-                          )
-                          .toFixed(2)}
-                        {prefix(
-                          ` = $${row.amount} + `,
-                          breakdownFees(Number(row.amount))
-                            .map(
-                              (row) => `$${row.amount.toFixed(2)} ${row.name}`
-                            )
-                            .join(" + ")
-                        )}
-                      </li>
-                    ))}
-                </ul>
-              </li>
-            </>
-          ))}
-      </ul>
+      <Results />
     </>
   );
 }
