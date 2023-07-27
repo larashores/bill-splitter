@@ -17,10 +17,14 @@ function List(props: {
   columns: Array<ColumnSpecifier>;
   onChange?: (event: Event<string[][]>) => void;
   initialValues?: string[][];
+  defaultRow?: string[];
 }) {
-  const empty = Array<string>(props.columns.length).fill("");
-  const initialValues =
-    props.initialValues === undefined ? [empty] : props.initialValues;
+  const defaultRow = props.defaultRow
+    ? props.defaultRow
+    : Array<string>(props.columns.length).fill("");
+  const initialValues = props.initialValues
+    ? props.initialValues
+    : [defaultRow];
   const [items, setItems] = React.useState(initialValues);
 
   function isBlank(value: string, col: number) {
@@ -38,7 +42,7 @@ function List(props: {
       .filter((item, m) => item.some((x, n) => !isBlank(x, n)) || row == m);
 
     if (newItems.every((item) => item.some((x, n) => !isBlank(x, n)))) {
-      newItems.push(empty);
+      newItems.push(defaultRow);
     }
     setItems(newItems);
     if (props.onChange !== undefined) {

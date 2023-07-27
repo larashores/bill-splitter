@@ -1,5 +1,4 @@
 import React from "react";
-// import Toggle from "./Toggle.tsx"
 import List from "./List.tsx";
 import * as utils from "./utils.tsx";
 import "./App.css";
@@ -160,6 +159,7 @@ function App() {
         ]}
         onChange={onFeeChange}
         initialValues={initialFees}
+        defaultRow={["", "", "flat"]}
       />
       <h2>Results</h2>
       <Results />
