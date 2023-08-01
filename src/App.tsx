@@ -21,11 +21,6 @@ function FeeCell(props: React.ComponentProps<"select">) {
 }
 
 function App() {
-  const initialFees = [
-    ["Tax", "", "flat"],
-    ["Tip", "", "flat"],
-    ["", "", "flat"],
-  ];
   const [people, setPeople] = React.useState([""]);
   const [items, setItems] = React.useState([
     { amount: "", name: "", person: "" },
@@ -74,9 +69,10 @@ function App() {
   }
 
   function getTotal(person: string): number {
+    const totalPeople = people.filter(person => person).length
     const subtotal = items
-      .filter((row) => row.person == person && row.amount)
-      .map((row) => Number(row.amount))
+      .filter((row) => [person, "all"].includes(row.person) && row.amount)
+      .map((row) => row.person == "all" ? Number(row.amount) / totalPeople : Number(row.amount))
       .reduce((amount, current) => Number(amount) + current, 0);
     const total = breakdownFees(subtotal)
       .map((row) => row.amount)
@@ -93,11 +89,13 @@ function App() {
           .map((person) => (
             <option value={person}>{person}</option>
           ))}
+        <option value="all">All</option>
       </select>
     );
   }
 
   function Results() {
+    const totalPeople = people.filter(person => person).length
     return (
       <ul id="results">
         {people
@@ -107,20 +105,20 @@ function App() {
               {person}: {"$" + getTotal(person)?.toFixed(2)}
               <ul>
                 {items
-                  .filter((row) => row.person == person && row.amount)
+                  .filter((row) => [person, "all"].includes(row.person) && row.amount)
                   .map((row, ind) => (
                     <li key={ind}>
                       {row.name} : $
-                      {breakdownFees(Number(row.amount))
+                      {breakdownFees(row.person == "all" ? Number(row.amount) / totalPeople : Number(row.amount))
                         .map((row) => row.amount)
                         .reduce(
                           (amount, current) => amount + current,
-                          Number(row.amount)
+                          row.person == "all" ? Number(row.amount) / totalPeople : Number(row.amount)
                         )
                         .toFixed(2)}
                       {utils.prefix(
-                        ` = $${row.amount} + `,
-                        breakdownFees(Number(row.amount))
+                        ` = $${(row.person == "all" ? Number(row.amount) / totalPeople : Number(row.amount)).toFixed(2)} + `,
+                        breakdownFees(row.person == "all" ? Number(row.amount) / totalPeople : Number(row.amount))
                           .map((row) => `$${row.amount.toFixed(2)} ${row.name}`)
                           .join(" + ")
                       )}
@@ -158,7 +156,11 @@ function App() {
           { name: "Type", Type: FeeCell, isBlank: (_) => true },
         ]}
         onChange={onFeeChange}
-        initialValues={initialFees}
+        initialValues={[
+          ["Tax", "", "flat"],
+          ["Tip", "", "flat"],
+          ["", "", "flat"],
+        ]}
         defaultRow={["", "", "flat"]}
       />
       <h2>Results</h2>
