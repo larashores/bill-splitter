@@ -69,10 +69,14 @@ function App() {
   }
 
   function getTotal(person: string): number {
-    const totalPeople = people.filter(person => person).length
+    const totalPeople = people.filter((person) => person).length;
     const subtotal = items
       .filter((row) => [person, "all"].includes(row.person) && row.amount)
-      .map((row) => row.person == "all" ? Number(row.amount) / totalPeople : Number(row.amount))
+      .map((row) =>
+        row.person == "all"
+          ? Number(row.amount) / totalPeople
+          : Number(row.amount)
+      )
       .reduce((amount, current) => Number(amount) + current, 0);
     const total = breakdownFees(subtotal)
       .map((row) => row.amount)
@@ -94,8 +98,33 @@ function App() {
     );
   }
 
+  function LineItem(
+    row: { name: string; amount: string; person: string },
+    ind: number
+  ) {
+    const totalPeople = people.filter((person) => person).length;
+    const attributableAmount =
+      row.person == "all"
+        ? Number(row.amount) / totalPeople
+        : Number(row.amount);
+    return (
+      <li key={ind}>
+        {row.name} : $
+        {breakdownFees(attributableAmount)
+          .map((row) => row.amount)
+          .reduce((amount, current) => amount + current, attributableAmount)
+          .toFixed(2)}
+        {utils.prefix(
+          ` = $${attributableAmount.toFixed(2)} + `,
+          breakdownFees(attributableAmount)
+            .map((row) => `$${row.amount.toFixed(2)} ${row.name}`)
+            .join(" + ")
+        )}
+      </li>
+    );
+  }
+
   function Results() {
-    const totalPeople = people.filter(person => person).length
     return (
       <ul id="results">
         {people
@@ -105,25 +134,10 @@ function App() {
               {person}: {"$" + getTotal(person)?.toFixed(2)}
               <ul>
                 {items
-                  .filter((row) => [person, "all"].includes(row.person) && row.amount)
-                  .map((row, ind) => (
-                    <li key={ind}>
-                      {row.name} : $
-                      {breakdownFees(row.person == "all" ? Number(row.amount) / totalPeople : Number(row.amount))
-                        .map((row) => row.amount)
-                        .reduce(
-                          (amount, current) => amount + current,
-                          row.person == "all" ? Number(row.amount) / totalPeople : Number(row.amount)
-                        )
-                        .toFixed(2)}
-                      {utils.prefix(
-                        ` = $${(row.person == "all" ? Number(row.amount) / totalPeople : Number(row.amount)).toFixed(2)} + `,
-                        breakdownFees(row.person == "all" ? Number(row.amount) / totalPeople : Number(row.amount))
-                          .map((row) => `$${row.amount.toFixed(2)} ${row.name}`)
-                          .join(" + ")
-                      )}
-                    </li>
-                  ))}
+                  .filter(
+                    (row) => [person, "all"].includes(row.person) && row.amount
+                  )
+                  .map((row, ind) => LineItem(row, ind))}
               </ul>
             </li>
           ))}
