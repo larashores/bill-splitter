@@ -13,7 +13,7 @@ type ColumnSpecifier = {
   isBlank?: (value: string) => boolean;
 };
 
-function List(props: {
+function Table(props: {
   columns: Array<ColumnSpecifier>;
   onChange?: (event: Event<string[][]>) => void;
   initialValues?: string[][];
@@ -80,4 +80,4 @@ function List(props: {
   );
 }
 
-export default List;
+export default Table;

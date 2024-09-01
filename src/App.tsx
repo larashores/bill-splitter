@@ -1,5 +1,5 @@
 import React from "react";
-import List from "./List.tsx";
+import Table from "./Table.tsx";
 import * as utils from "./utils.tsx";
 import "./App.css";
 
@@ -149,12 +149,12 @@ function App() {
     <>
       <h1>Bill Splitter</h1>
       <h2>People</h2>
-      <List
+      <Table
         columns={[{ name: "Name", Type: TextCell }]}
         onChange={onPersonChange}
       />
       <h2>Items</h2>
-      <List
+      <Table
         columns={[
           { name: "Name", Type: TextCell },
           { name: "Amount", Type: NumberCell },
@@ -163,7 +163,7 @@ function App() {
         onChange={onItemChange}
       />
       <h2>Fees</h2>
-      <List
+      <Table
         columns={[
           { name: "Name", Type: TextCell },
           { name: "Amount", Type: NumberCell },
