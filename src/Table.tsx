@@ -2,19 +2,19 @@ import React from "react";
 import "./App.css";
 
 type Event<T> = { target: { value: T } };
-type Props = {
-  onChange: (event: Event<string>) => void;
-  value: string;
+type CellProps<T> = {
+  onChange: (event: Event<T>) => void;
+  value: T;
 };
 
-type ColumnSpecifier = {
-  name: string;
-  Type: React.FC<Props>;
-  isBlank?: (value: string) => boolean;
+type ColumnSpec<T> = {
+  name: T;
+  Type: React.FC<CellProps<T>>;
+  isBlank?: (value: T) => boolean;
 };
 
 function Table(props: {
-  columns: Array<ColumnSpecifier>;
+  columns: Array<ColumnSpec<string>>;
   onChange?: (event: Event<string[][]>) => void;
   initialValues?: string[][];
   defaultRow?: string[];
