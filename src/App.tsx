@@ -1,5 +1,5 @@
 import React from "react";
-import { Table, Event } from "./Table.tsx";
+import { ColumnSpec, Table, Event } from "./Table.tsx";
 import * as utils from "./utils.tsx";
 import "./App.css";
 
@@ -188,7 +188,7 @@ function App() {
             Type: PeopleCell,
             default: [],
             isBlank: (v) => !v.length,
-          },
+          } as ColumnSpec<string | string[]>,
         ]}
         items={items}
         onChange={(e) => setItems(e.target.value)}

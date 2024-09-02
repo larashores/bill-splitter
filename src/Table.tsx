@@ -15,16 +15,15 @@ export type ColumnSpec<T> = {
   isBlank?: (value: T) => boolean;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function Table<T extends Record<string, any>>(props: {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  columns: ColumnSpec<any>[];
+export function Table<T extends Record<string, V>, V>(props: {
+  columns: ColumnSpec<V>[];
   items: T[];
   onChange?: (event: Event<T[]>) => void;
 }) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const defaultRow = {} as any;
+  const defaultRow = {} as T;
   for (const col of props.columns) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     defaultRow[col.name] = col.default;
   }
 
