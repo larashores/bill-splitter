@@ -1,5 +1,5 @@
 import React from "react";
-import { Table } from "./Table.tsx";
+import { Table, Event } from "./Table.tsx";
 import * as utils from "./utils.tsx";
 import "./App.css";
 
@@ -23,7 +23,7 @@ function FeeCell(props: React.ComponentProps<"select">) {
 function App() {
   const [people, setPeople] = React.useState([{ name: "" }]);
   const [items, setItems] = React.useState([
-    { name: "", amount: "", person: "" },
+    { name: "", amount: "", people: [] as string[] },
   ]);
 
   const [fees, setFees] = React.useState([
@@ -49,14 +49,15 @@ function App() {
     return amounts;
   }
 
-  function getTotal(person: string): number {
-    const totalPeople = people.filter((person) => person.name).length;
+  function getTotal(person: string | undefined): number {
     const subtotal = items
-      .filter((row) => [person, "all"].includes(row.person) && row.amount)
-      .map((row) =>
-        row.person == "all"
-          ? Number(row.amount) / totalPeople
-          : Number(row.amount)
+      .filter(
+        (item) =>
+          (person === undefined || item.people.includes(person)) && item.amount
+      )
+      .map(
+        (item) =>
+          Number(item.amount) / (person === undefined ? 1 : item.people.length)
       )
       .reduce((amount, current) => Number(amount) + current, 0);
     const total = breakdownFees(subtotal)
@@ -65,29 +66,68 @@ function App() {
     return Number.isNaN(total) ? 0 : total;
   }
 
-  function PersonCell(props: React.ComponentProps<"select">) {
-    return (
-      <select {...props}>
-        <option value=""></option>
-        {people
-          .filter((person) => person.name)
-          .map((person) => (
-            <option value={person.name}>{person.name}</option>
-          ))}
-        <option value="all">All</option>
-      </select>
+  function PeopleCell(props: {
+    value: string[];
+    onChange: (val: Event<string[]>) => void;
+  }) {
+    const [selected, setSelected] = React.useState(props.value);
+    const [clicked, setClicked] = React.useState(false);
+    const existing = props.value.filter((name) =>
+      people.map((person) => person.name).includes(name)
     );
+    if (props.value.length != existing.length) {
+      props.onChange({ target: { value: existing } });
+    }
+    let cell = (
+      <button onClick={() => setClicked(true)}>{props.value.join(", ")}</button>
+    );
+    if (clicked) {
+      cell = (
+        <>
+          <div id="people-select">
+            {people
+              .filter((person) => person.name)
+              .map((person) => (
+                <div id="people-select-row">
+                  <input
+                    type="checkbox"
+                    id={`select-${person.name}`}
+                    checked={selected.includes(person.name)}
+                    onChange={(e) => {
+                      const checked = new Set<string>(selected);
+                      if (e.target.checked) {
+                        checked.add(person.name);
+                      } else {
+                        checked.delete(person.name);
+                      }
+                      setSelected([...checked]);
+                    }}
+                  ></input>
+                  <label htmlFor={`select-${person.name}`}>{person.name}</label>
+                </div>
+              ))}
+            <button
+              id="people-select-button"
+              onClick={() => {
+                setClicked(false);
+                props.onChange({ target: { value: selected } });
+              }}
+            >
+              Select
+            </button>
+          </div>
+          {cell}
+        </>
+      );
+    }
+    return cell;
   }
 
   function LineItem(
-    row: { name: string; amount: string; person: string },
+    row: { name: string; amount: string; people: string[] },
     ind: number
   ) {
-    const totalPeople = people.filter((person) => person.name).length;
-    const attributableAmount =
-      row.person == "all"
-        ? Number(row.amount) / totalPeople
-        : Number(row.amount);
+    const attributableAmount = Number(row.amount) / row.people.length;
     return (
       <li key={ind}>
         {row.name} : $
@@ -116,13 +156,15 @@ function App() {
               <ul>
                 {items
                   .filter(
-                    (row) =>
-                      [person.name, "all"].includes(row.person) && row.amount
+                    (row) => row.people.includes(person.name) && row.amount
                   )
                   .map((row, ind) => LineItem(row, ind))}
               </ul>
             </li>
           ))}
+        {people.filter((person) => person.name).length ? (
+          <li>Total: ${getTotal(undefined)?.toFixed(2)}</li>
+        ) : null}
       </ul>
     );
   }
@@ -141,7 +183,12 @@ function App() {
         columns={[
           { name: "name", Type: TextCell },
           { name: "amount", Type: NumberCell },
-          { name: "person", Type: PersonCell },
+          {
+            name: "people",
+            Type: PeopleCell,
+            default: [],
+            isBlank: (v) => !v.length,
+          },
         ]}
         items={items}
         onChange={(e) => setItems(e.target.value)}
