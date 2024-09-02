@@ -87,8 +87,8 @@ function App() {
           <div id="people-select">
             {people
               .filter((person) => person.name)
-              .map((person) => (
-                <div id="people-select-row">
+              .map((person, n) => (
+                <div id="people-select-row" key={`people-select-row-${n}`}>
                   <input
                     type="checkbox"
                     id={`select-${person.name}`}
@@ -177,6 +177,7 @@ function App() {
         columns={[{ name: "name", Type: TextCell }]}
         items={people}
         onChange={(e) => setPeople(e.target.value)}
+        defaultRow={{ name: "" }}
       />
       <h2>Items</h2>
       <Table
@@ -186,10 +187,10 @@ function App() {
           {
             name: "people",
             Type: PeopleCell,
-            default: [],
             isBlank: (v) => !v.length,
           } as ColumnSpec<string | string[]>,
         ]}
+        defaultRow={{ name: "", amount: "", people: [] }}
         items={items}
         onChange={(e) => setItems(e.target.value)}
       />
@@ -199,8 +200,9 @@ function App() {
         columns={[
           { name: "name", Type: TextCell },
           { name: "amount", Type: NumberCell },
-          { name: "type", Type: FeeCell, isBlank: (_) => true },
+          { name: "type", Type: FeeCell, isBlank: (x) => x == x },
         ]}
+        defaultRow={{ name: "", amount: "", type: "" }}
         items={fees}
         onChange={(e) => setFees(e.target.value)}
       />

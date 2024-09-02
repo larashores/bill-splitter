@@ -11,22 +11,15 @@ export type CellProps<T> = {
 export type ColumnSpec<T> = {
   name: string;
   Type: React.FC<CellProps<T>>;
-  default?: T;
   isBlank?: (value: T) => boolean;
 };
 
 export function Table<T extends Record<string, V>, V>(props: {
   columns: ColumnSpec<V>[];
+  defaultRow: T;
   items: T[];
   onChange?: (event: Event<T[]>) => void;
 }) {
-  const defaultRow = {} as T;
-  for (const col of props.columns) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    defaultRow[col.name] = col.default;
-  }
-
   function isBlank(row: T) {
     for (const [name, value] of Object.entries(row)) {
       const columnSpec = props.columns.find((c) => c.name == name);
@@ -41,8 +34,7 @@ export function Table<T extends Record<string, V>, V>(props: {
     return true;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function onChange(event: Event<any>, row: number, col: string): void {
+  function onChange(event: Event<V>, row: number, col: string): void {
     if (!props.onChange) {
       return;
     }
@@ -53,7 +45,7 @@ export function Table<T extends Record<string, V>, V>(props: {
       .filter((row) => !isBlank(row));
 
     if (!mapped.some(isBlank)) {
-      mapped.push(defaultRow);
+      mapped.push(props.defaultRow);
     }
     props.onChange({ target: { value: mapped } });
   }
@@ -61,25 +53,29 @@ export function Table<T extends Record<string, V>, V>(props: {
   return (
     <>
       <table>
-        <tr key="header">
-          {props.columns.map((col) => (
-            <th>
-              <label>{utils.capitalize(col.name)}</label>
-            </th>
-          ))}
-        </tr>
-        {props.items.map((row, n) => (
-          <tr>
-            {props.columns.map((col) => (
-              <td>
-                <col.Type
-                  onChange={(e) => onChange(e, n, col.name)}
-                  value={row[col.name]}
-                ></col.Type>
-              </td>
+        <thead>
+          <tr key="header">
+            {props.columns.map((col, m) => (
+              <th key={`table-col-${m}`}>
+                <label>{utils.capitalize(col.name)}</label>
+              </th>
             ))}
           </tr>
-        ))}
+        </thead>
+        <tbody>
+          {props.items.map((row, n) => (
+            <tr key={`table-row-${n}`}>
+              {props.columns.map((col, m) => (
+                <td key={`table-row-${n}-col-${m}`}>
+                  <col.Type
+                    onChange={(e) => onChange(e, n, col.name)}
+                    value={row[col.name]}
+                  ></col.Type>
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
       </table>
     </>
   );
