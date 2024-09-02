@@ -208,7 +208,7 @@ function App() {
           { name: "amount", Type: NumberCell },
           { name: "type", Type: FeeCell, isBlank: (x) => x == x },
         ]}
-        defaultRow={{ name: "", amount: "", type: "" }}
+        defaultRow={{ name: "", amount: "", type: "flat" }}
         items={fees}
         onChange={(e) => setFees(e.target.value)}
       />
