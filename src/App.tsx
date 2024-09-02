@@ -1,5 +1,5 @@
 import React from "react";
-import Table from "./Table.tsx";
+import { Table } from "./Table.tsx";
 import * as utils from "./utils.tsx";
 import "./App.css";
 
@@ -21,35 +21,16 @@ function FeeCell(props: React.ComponentProps<"select">) {
 }
 
 function App() {
-  const [people, setPeople] = React.useState([""]);
+  const [people, setPeople] = React.useState([{ name: "" }]);
   const [items, setItems] = React.useState([
-    { amount: "", name: "", person: "" },
+    { name: "", amount: "", person: "" },
   ]);
-  const [fees, setFees] = React.useState([{ amount: "", name: "", type: "" }]);
 
-  function onPersonChange(event: { target: { value: string[][] } }) {
-    setPeople(event.target.value.map((row) => row[0]));
-  }
-
-  function onItemChange(event: { target: { value: string[][] } }) {
-    setItems(
-      event.target.value.map((row) => ({
-        name: row[0],
-        amount: row[1],
-        person: row[2],
-      }))
-    );
-  }
-
-  function onFeeChange(event: { target: { value: string[][] } }) {
-    setFees(
-      event.target.value.map((row) => ({
-        name: row[0],
-        amount: row[1],
-        type: row[2],
-      }))
-    );
-  }
+  const [fees, setFees] = React.useState([
+    { name: "Tax", amount: "", type: "flat" },
+    { name: "Tip", amount: "", type: "flat" },
+    { name: "", amount: "", type: "flat" },
+  ]);
 
   function breakdownFees(value: number) {
     const total = items
@@ -69,7 +50,7 @@ function App() {
   }
 
   function getTotal(person: string): number {
-    const totalPeople = people.filter((person) => person).length;
+    const totalPeople = people.filter((person) => person.name).length;
     const subtotal = items
       .filter((row) => [person, "all"].includes(row.person) && row.amount)
       .map((row) =>
@@ -89,9 +70,9 @@ function App() {
       <select {...props}>
         <option value=""></option>
         {people
-          .filter((person) => person)
+          .filter((person) => person.name)
           .map((person) => (
-            <option value={person}>{person}</option>
+            <option value={person.name}>{person.name}</option>
           ))}
         <option value="all">All</option>
       </select>
@@ -102,7 +83,7 @@ function App() {
     row: { name: string; amount: string; person: string },
     ind: number
   ) {
-    const totalPeople = people.filter((person) => person).length;
+    const totalPeople = people.filter((person) => person.name).length;
     const attributableAmount =
       row.person == "all"
         ? Number(row.amount) / totalPeople
@@ -128,14 +109,15 @@ function App() {
     return (
       <ul id="results">
         {people
-          .filter((person) => person)
+          .filter((person) => person.name)
           .map((person, ind) => (
             <li key={ind}>
-              {person}: {"$" + getTotal(person)?.toFixed(2)}
+              {person.name}: {"$" + getTotal(person.name)?.toFixed(2)}
               <ul>
                 {items
                   .filter(
-                    (row) => [person, "all"].includes(row.person) && row.amount
+                    (row) =>
+                      [person.name, "all"].includes(row.person) && row.amount
                   )
                   .map((row, ind) => LineItem(row, ind))}
               </ul>
@@ -150,32 +132,30 @@ function App() {
       <h1>Bill Splitter</h1>
       <h2>People</h2>
       <Table
-        columns={[{ name: "Name", Type: TextCell }]}
-        onChange={onPersonChange}
+        columns={[{ name: "name", Type: TextCell }]}
+        items={people}
+        onChange={(e) => setPeople(e.target.value)}
       />
       <h2>Items</h2>
       <Table
         columns={[
-          { name: "Name", Type: TextCell },
-          { name: "Amount", Type: NumberCell },
-          { name: "Person", Type: PersonCell },
+          { name: "name", Type: TextCell },
+          { name: "amount", Type: NumberCell },
+          { name: "person", Type: PersonCell },
         ]}
-        onChange={onItemChange}
+        items={items}
+        onChange={(e) => setItems(e.target.value)}
       />
+
       <h2>Fees</h2>
       <Table
         columns={[
-          { name: "Name", Type: TextCell },
-          { name: "Amount", Type: NumberCell },
-          { name: "Type", Type: FeeCell, isBlank: (_) => true },
+          { name: "name", Type: TextCell },
+          { name: "amount", Type: NumberCell },
+          { name: "type", Type: FeeCell, isBlank: (_) => true },
         ]}
-        onChange={onFeeChange}
-        initialValues={[
-          ["Tax", "", "flat"],
-          ["Tip", "", "flat"],
-          ["", "", "flat"],
-        ]}
-        defaultRow={["", "", "flat"]}
+        items={fees}
+        onChange={(e) => setFees(e.target.value)}
       />
       <h2>Results</h2>
       <Results />

@@ -1,75 +1,81 @@
 import React from "react";
 import "./App.css";
+import * as utils from "./utils.tsx";
 
-type Event<T> = { target: { value: T } };
-type CellProps<T> = {
+export type Event<T> = { target: { value: T } };
+export type CellProps<T> = {
   onChange: (event: Event<T>) => void;
   value: T;
 };
 
-type ColumnSpec<T> = {
-  name: T;
+export type ColumnSpec<T> = {
+  name: string;
   Type: React.FC<CellProps<T>>;
+  default?: T;
   isBlank?: (value: T) => boolean;
 };
 
-function Table(props: {
-  columns: Array<ColumnSpec<string>>;
-  onChange?: (event: Event<string[][]>) => void;
-  initialValues?: string[][];
-  defaultRow?: string[];
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function Table<T extends Record<string, any>>(props: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  columns: ColumnSpec<any>[];
+  items: T[];
+  onChange?: (event: Event<T[]>) => void;
 }) {
-  const defaultRow = props.defaultRow
-    ? props.defaultRow
-    : Array<string>(props.columns.length).fill("");
-  const initialValues = props.initialValues
-    ? props.initialValues
-    : [defaultRow];
-  const [items, setItems] = React.useState(initialValues);
-
-  function isBlank(value: string, col: number) {
-    const f = props.columns[col].isBlank;
-    return f ? f(value) : value === "";
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const defaultRow = {} as any;
+  for (const col of props.columns) {
+    defaultRow[col.name] = col.default;
   }
 
-  function onChange(event: Event<string>, row: number, col: number) {
-    const newItems = items
-      .map((item, m) =>
-        m === row
-          ? item.map((v, n) => (n == col ? event.target.value : v))
-          : item
-      )
-      .filter((item, m) => item.some((x, n) => !isBlank(x, n)) || row == m);
+  function isBlank(row: T) {
+    for (const [name, value] of Object.entries(row)) {
+      const columnSpec = props.columns.find((c) => c.name == name);
+      if (columnSpec && columnSpec.isBlank) {
+        if (!columnSpec.isBlank(value)) {
+          return false;
+        }
+      } else if (value) {
+        return false;
+      }
+    }
+    return true;
+  }
 
-    if (newItems.every((item) => item.some((x, n) => !isBlank(x, n)))) {
-      newItems.push(defaultRow);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function onChange(event: Event<any>, row: number, col: string): void {
+    if (!props.onChange) {
+      return;
     }
-    setItems(newItems);
-    if (props.onChange !== undefined) {
-      props.onChange({
-        ...event,
-        target: { ...event.target, value: newItems },
-      });
+    const mapped = props.items
+      .map((item, r) =>
+        row == r ? { ...item, [col]: event.target.value } : item
+      )
+      .filter((row) => !isBlank(row));
+
+    if (!mapped.some(isBlank)) {
+      mapped.push(defaultRow);
     }
+    props.onChange({ target: { value: mapped } });
   }
 
   return (
     <>
       <table>
         <tr key="header">
-          {props.columns.map((item) => (
+          {props.columns.map((col) => (
             <th>
-              <label>{item.name}</label>
+              <label>{utils.capitalize(col.name)}</label>
             </th>
           ))}
         </tr>
-        {items.map((item, m) => (
-          <tr key={m}>
-            {props.columns.map((col, n) => (
+        {props.items.map((row, n) => (
+          <tr>
+            {props.columns.map((col) => (
               <td>
                 <col.Type
-                  onChange={(e) => onChange(e, m, n)}
-                  value={item[n]}
+                  onChange={(e) => onChange(e, n, col.name)}
+                  value={row[col.name]}
                 ></col.Type>
               </td>
             ))}
@@ -79,5 +85,3 @@ function Table(props: {
     </>
   );
 }
-
-export default Table;
