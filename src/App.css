@@ -21,6 +21,7 @@ label,
 button,
 #results {
   text-align: center;
+  border-color: grey;
   border-radius: 3vmin;
   border-width: 1px;
   box-sizing: border-box;
@@ -90,5 +91,5 @@ input[id^="select-"] {
   display: none;
 }
 input[type="checkbox"]:checked + label[for^="select-"] {
-  background-color: beige;
+  background-color: tan;
 }

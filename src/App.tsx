@@ -79,7 +79,13 @@ function App() {
       props.onChange({ target: { value: existing } });
     }
     let cell = (
-      <button onClick={() => setClicked(true)}>{props.value.join(", ")}</button>
+      <button
+        onClick={() =>
+          setClicked(people.filter((person) => person.name).length != 0)
+        }
+      >
+        {props.value.join(", ")}
+      </button>
     );
     if (clicked) {
       cell = (
