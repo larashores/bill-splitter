@@ -30,7 +30,7 @@ button,
   min-height: 1.8em;
 }
 
-[data-invalid=true] {
+[data-invalid="true"] {
   background-color: lightcoral;
 }
 

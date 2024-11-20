@@ -4,7 +4,7 @@ import * as utils from "./utils.tsx";
 import "./App.css";
 
 function NumberCell(props: React.ComponentProps<"input">) {
-  const invalid = props.value != "" && Number.isNaN(Number(props.value))
+  const invalid = props.value && isNaN(Number(props.value));
   return <input inputMode="decimal" data-invalid={invalid} {...props}></input>;
 }
 
@@ -54,7 +54,9 @@ function App() {
     const subtotal = items
       .filter(
         (item) =>
-          (person === undefined || item.people.includes(person)) && item.amount
+          (person === undefined || item.people.includes(person)) &&
+          item.amount &&
+          !isNaN(Number(item.amount))
       )
       .map(
         (item) =>
@@ -163,7 +165,10 @@ function App() {
               <ul>
                 {items
                   .filter(
-                    (row) => row.people.includes(person.name) && row.amount
+                    (row) =>
+                      row.people.includes(person.name) &&
+                      row.amount &&
+                      !isNaN(Number(row.amount))
                   )
                   .map((row, ind) => LineItem(row, ind))}
               </ul>
