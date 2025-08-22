@@ -97,3 +97,19 @@ input[id^="select-"] {
 input[type="checkbox"]:checked + label[for^="select-"] {
   background-color: tan;
 }
+
+#share {
+  background-color: #4caf50;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 10px;
+  transition: background-color 0.5s;
+}
+
+#share:active {
+  color: grey;
+  border-width: 1px;
+  border-style: solid;
+  background-color: white;
+}

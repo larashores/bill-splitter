@@ -1,5 +1,14 @@
 import React from "react";
 import { ColumnSpec, Table, Event } from "./Table.tsx";
+import {
+  InitialPeople,
+  InitialItems,
+  InitialFees,
+  BlankFee,
+  BlankItem,
+  BlankPerson,
+} from "./Params.tsx";
+import { Share } from "./Share.tsx";
 import * as utils from "./utils.tsx";
 import "./App.css";
 
@@ -22,16 +31,9 @@ function FeeCell(props: React.ComponentProps<"select">) {
 }
 
 function App() {
-  const [people, setPeople] = React.useState([{ name: "" }]);
-  const [items, setItems] = React.useState([
-    { name: "", amount: "", people: [] as string[] },
-  ]);
-
-  const [fees, setFees] = React.useState([
-    { name: "Tax", amount: "", type: "flat" },
-    { name: "Tip", amount: "", type: "flat" },
-    { name: "", amount: "", type: "flat" },
-  ]);
+  const [people, setPeople] = React.useState(InitialPeople);
+  const [items, setItems] = React.useState(InitialItems);
+  const [fees, setFees] = React.useState(InitialFees);
 
   function breakdownFees(value: number) {
     const total = items
@@ -189,7 +191,7 @@ function App() {
         columns={[{ name: "name", Type: TextCell }]}
         items={people}
         onChange={(e) => setPeople(e.target.value)}
-        defaultRow={{ name: "" }}
+        defaultRow={BlankPerson}
       />
       <h2>Items</h2>
       <Table
@@ -202,7 +204,7 @@ function App() {
             isBlank: (v) => !v.length,
           } as ColumnSpec<string | string[]>,
         ]}
-        defaultRow={{ name: "", amount: "", people: [] }}
+        defaultRow={BlankItem}
         items={items}
         onChange={(e) => setItems(e.target.value)}
       />
@@ -214,12 +216,13 @@ function App() {
           { name: "amount", Type: NumberCell },
           { name: "type", Type: FeeCell, isBlank: (x) => x == x },
         ]}
-        defaultRow={{ name: "", amount: "", type: "flat" }}
+        defaultRow={BlankFee}
         items={fees}
         onChange={(e) => setFees(e.target.value)}
       />
       <h2>Results</h2>
       <Results />
+      <Share people={people} items={items} fees={fees} />
     </>
   );
 }
