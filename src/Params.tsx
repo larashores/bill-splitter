@@ -53,11 +53,10 @@ const feesRows = Array(feesNumRows)
   }));
 
 export const BlankFee = { name: "", amount: "", type: "flat" };
+export const DefaultFees = [
+  { name: "Tax", amount: "", type: "flat" },
+  { name: "Tip", amount: "", type: "flat" },
+  BlankFee,
+];
 export const InitialFees =
-  feesRows.length > 0
-    ? [...feesRows, BlankFee]
-    : [
-        { name: "Tax", amount: "", type: "flat" },
-        { name: "Tip", amount: "", type: "flat" },
-        BlankFee,
-      ];
+  feesRows.length > 0 ? [...feesRows, BlankFee] : DefaultFees;

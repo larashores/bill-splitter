@@ -7,8 +7,9 @@ import {
   BlankFee,
   BlankItem,
   BlankPerson,
+  DefaultFees,
 } from "./Params.tsx";
-import { Share } from "./Share.tsx";
+import { Actions } from "./Actions.tsx";
 import * as utils from "./utils.tsx";
 import "./App.css";
 
@@ -34,6 +35,13 @@ function App() {
   const [people, setPeople] = React.useState(InitialPeople);
   const [items, setItems] = React.useState(InitialItems);
   const [fees, setFees] = React.useState(InitialFees);
+
+  // Clear query parameters on page load
+  React.useEffect(() => {
+    if (window.location.search) {
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, []);
 
   function breakdownFees(value: number) {
     const total = items
@@ -185,7 +193,9 @@ function App() {
 
   return (
     <>
-      <h1>Bill Splitter</h1>
+      <h1>
+        <a href={window.location.pathname}>Bill Splitter</a>
+      </h1>
       <h2>People</h2>
       <Table
         columns={[{ name: "name", Type: TextCell }]}
@@ -222,7 +232,16 @@ function App() {
       />
       <h2>Results</h2>
       <Results />
-      <Share people={people} items={items} fees={fees} />
+      <Actions
+        people={people}
+        items={items}
+        fees={fees}
+        onNewBill={() => {
+          setPeople([BlankPerson]);
+          setItems([BlankItem]);
+          setFees(DefaultFees);
+        }}
+      />
     </>
   );
 }

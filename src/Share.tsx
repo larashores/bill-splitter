@@ -4,19 +4,19 @@ interface ShareProps {
   fees: Array<{ name: string; amount: string; type: string }>;
 }
 
-export function Share({ people, items, fees }: ShareProps) {
+export function Share(props: ShareProps) {
   function generateShareUrl() {
     const params = new URLSearchParams();
 
     // Add people
-    people.forEach((person) => {
+    props.people.forEach((person) => {
       if (person.name) {
         params.append("people.name", person.name);
       }
     });
 
     // Add items
-    items.forEach((item) => {
+    props.items.forEach((item) => {
       if (item.name || item.amount || item.people.length > 0) {
         params.append("items.name", item.name);
         params.append("items.amount", item.amount);
@@ -25,7 +25,7 @@ export function Share({ people, items, fees }: ShareProps) {
     });
 
     // Add fees
-    fees.forEach((fee) => {
+    props.fees.forEach((fee) => {
       if (fee.name || fee.amount) {
         params.append("fees.name", fee.name);
         params.append("fees.amount", fee.amount);
@@ -57,15 +57,9 @@ export function Share({ people, items, fees }: ShareProps) {
     }
   }
 
-  if (
-    people.some((person) => person.name) ||
-    items.some((item) => item.name || item.amount || item.people.length > 0) ||
-    fees.some((fee) => fee.amount)
-  ) {
-    return (
-      <button onClick={handleShare} id="share">
-        Share Bill
-      </button>
-    );
-  }
+  return (
+    <button onClick={handleShare} id="share">
+      Share Bill
+    </button>
+  );
 }
