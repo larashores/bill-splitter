@@ -241,7 +241,6 @@ function App() {
         onChange={(e) => setItems(e.target.value)}
         disabled={share}
       />
-
       <h2>Fees</h2>
       <Table
         columns={[

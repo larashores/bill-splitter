@@ -4,6 +4,26 @@ interface ShareProps {
   fees: Array<{ name: string; amount: string; type: string }>;
 }
 
+function generateTitle(people: Array<{ name: string }>) {
+  const names = people.map((person) => person.name).filter((name) => name);
+  if (names.length == 0) {
+    return "Bill Splitter";
+  } else if (names.length == 2) {
+    return `${names[0]} and ${names[1]}'s Bill`;
+  } else if (names.length <= 3) {
+    const pieces = [];
+    for (const name of names) {
+      pieces.push(name);
+    }
+    if (pieces.length >= 3) {
+      pieces[pieces.length - 1] = "and " + pieces[pieces.length - 1];
+    }
+    return pieces.join(", ") + "'s Bill";
+  } else {
+    return `${names[0]}, ${names[1]}... and ${names[names.length - 1]}'s Bill`;
+  }
+}
+
 export function Share(props: ShareProps) {
   function generateShareUrl() {
     const params = new URLSearchParams();
@@ -46,7 +66,7 @@ export function Share(props: ShareProps) {
     if (navigator.share) {
       navigator
         .share({
-          title: "Bill Splitter",
+          title: generateTitle(props.people),
           url: url,
         })
         .catch(console.error);
