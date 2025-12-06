@@ -8,6 +8,9 @@ export function Share(props: ShareProps) {
   function generateShareUrl() {
     const params = new URLSearchParams();
 
+    // Indicate this is a shared bill
+    params.append("share", "true");
+
     // Add people
     props.people.forEach((person) => {
       if (person.name) {

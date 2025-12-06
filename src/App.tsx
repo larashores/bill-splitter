@@ -36,6 +36,25 @@ function App() {
   const [items, setItems] = React.useState(InitialItems);
   const [fees, setFees] = React.useState(InitialFees);
 
+  const params = new URLSearchParams(window.location.search);
+  const share = params.get("share") === "true";
+
+  // Scroll to results section if viewing a shared bill
+  React.useLayoutEffect(() => {
+    if (window.location.search) {
+      if (share) {
+        const element = document.getElementById("results-header");
+        if (element) {
+          try {
+            element.scrollIntoView({ behavior: "smooth", block: "start" });
+          } catch (e) {
+            element.scrollIntoView();
+          }
+        }
+      }
+    }
+  }, [share]);
+
   // Clear query parameters on page load
   React.useEffect(() => {
     if (window.location.search) {
@@ -230,7 +249,7 @@ function App() {
         items={fees}
         onChange={(e) => setFees(e.target.value)}
       />
-      <h2>Results</h2>
+      <h2 id="results-header">Results</h2>
       <Results />
       <Actions
         people={people}
