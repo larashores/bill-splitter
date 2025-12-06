@@ -45,11 +45,7 @@ function App() {
       if (share) {
         const element = document.getElementById("results-header");
         if (element) {
-          try {
-            element.scrollIntoView({ behavior: "smooth", block: "start" });
-          } catch (e) {
-            element.scrollIntoView();
-          }
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
         }
       }
     }
@@ -214,7 +210,7 @@ function App() {
 
   return (
     <>
-      <h1>
+      <h1 id="app-title">
         <a href={window.location.pathname}>Bill Splitter</a>
       </h1>
       <h2>People</h2>
@@ -266,7 +262,13 @@ function App() {
           setFees(DefaultFees);
           setShare(false);
         }}
-        onEditBill={() => setShare(false)}
+        onEditBill={() => {
+          setShare(false);
+          const element = document.getElementById("app-title");
+          if (element) {
+            element.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        }}
       />
     </>
   );
