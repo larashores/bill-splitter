@@ -6,6 +6,7 @@ export type Event<T> = { target: { value: T } };
 export type CellProps<T> = {
   onChange: (event: Event<T>) => void;
   value: T;
+  disabled?: boolean;
 };
 
 export type ColumnSpec<T> = {
@@ -19,6 +20,7 @@ export function Table<T extends Record<string, V>, V>(props: {
   defaultRow: T;
   items: T[];
   onChange?: (event: Event<T[]>) => void;
+  disabled?: boolean;
 }) {
   function isBlank(row: T) {
     for (const [name, value] of Object.entries(row)) {
@@ -70,6 +72,7 @@ export function Table<T extends Record<string, V>, V>(props: {
                   <col.Type
                     onChange={(e) => onChange(e, n, col.name)}
                     value={row[col.name]}
+                    disabled={props.disabled}
                   ></col.Type>
                 </td>
               ))}

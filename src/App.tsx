@@ -37,7 +37,7 @@ function App() {
   const [fees, setFees] = React.useState(InitialFees);
 
   const params = new URLSearchParams(window.location.search);
-  const share = params.get("share") === "true";
+  const [share, setShare] = React.useState(params.get("share") === "true");
 
   // Scroll to results section if viewing a shared bill
   React.useLayoutEffect(() => {
@@ -101,6 +101,7 @@ function App() {
   function PeopleCell(props: {
     value: string[];
     onChange: (val: Event<string[]>) => void;
+    disabled?: boolean;
   }) {
     const [selected, setSelected] = React.useState(props.value);
     const [clicked, setClicked] = React.useState(false);
@@ -115,6 +116,7 @@ function App() {
         onClick={() =>
           setClicked(people.filter((person) => person.name).length != 0)
         }
+        disabled={props.disabled}
       >
         {props.value.join(", ")}
       </button>
@@ -221,6 +223,7 @@ function App() {
         items={people}
         onChange={(e) => setPeople(e.target.value)}
         defaultRow={BlankPerson}
+        disabled={share}
       />
       <h2>Items</h2>
       <Table
@@ -236,6 +239,7 @@ function App() {
         defaultRow={BlankItem}
         items={items}
         onChange={(e) => setItems(e.target.value)}
+        disabled={share}
       />
 
       <h2>Fees</h2>
@@ -248,10 +252,12 @@ function App() {
         defaultRow={BlankFee}
         items={fees}
         onChange={(e) => setFees(e.target.value)}
+        disabled={share}
       />
       <h2 id="results-header">Results</h2>
       <Results />
       <Actions
+        share={share}
         people={people}
         items={items}
         fees={fees}
@@ -259,7 +265,9 @@ function App() {
           setPeople([BlankPerson]);
           setItems([BlankItem]);
           setFees(DefaultFees);
+          setShare(false);
         }}
+        onEditBill={() => setShare(false)}
       />
     </>
   );

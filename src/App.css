@@ -39,8 +39,16 @@ button,
   min-height: 1.8em;
 }
 
+input:disabled,
+select:disabled,
+button:disabled {
+  background-color: silver;
+  color: white;
+  opacity: 1;
+}
+
 [data-invalid="true"] {
-  background-color: lightcoral;
+  background-color: rgb(104, 76, 76);
 }
 
 button {
@@ -110,25 +118,34 @@ input[type="checkbox"]:checked + label[for^="select-"] {
 #actions {
   display: flex;
   gap: 0.5em;
+  margin: 1em 1em 2em 1em;
   min-height: 2em;
 }
 
 #share {
   background-color: #4caf50;
-  border: none;
   color: white;
-  cursor: pointer;
-  transition: background-color 0.5s;
 }
 
 #new {
-  background-color: rgb(225, 225, 225);
+  background-color: cornflowerblue;
+  color: white;
+}
+
+#edit {
+  background-color: palegoldenrod;
+}
+
+#share,
+#new,
+#edit {
   cursor: pointer;
   transition: background-color 0.5s;
 }
 
 #share:active,
-#new:active {
+#new:active,
+#edit:active {
   color: grey;
   border-width: 1px;
   border-style: solid;

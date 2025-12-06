@@ -1,11 +1,14 @@
-import { Share } from "./Share.tsx";
+import { Edit } from "./Edit.tsx";
 import { New } from "./New.tsx";
+import { Share } from "./Share.tsx";
 
 interface ActionsProps {
+  share?: boolean;
   people: Array<{ name: string }>;
   items: Array<{ name: string; amount: string; people: string[] }>;
   fees: Array<{ name: string; amount: string; type: string }>;
   onNewBill: () => void;
+  onEditBill: () => void;
 }
 
 export function Actions(props: ActionsProps) {
@@ -21,6 +24,7 @@ export function Actions(props: ActionsProps) {
       <div id="actions">
         <Share people={props.people} items={props.items} fees={props.fees} />
         <New onClick={props.onNewBill} />
+        {props.share ? <Edit onClick={props.onEditBill} /> : null}
       </div>
     );
   }
